@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.bancodigital.utils.Utils.valida;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -32,8 +33,13 @@ public class ClienteController {
 
   @PostMapping("/clientes")
   ResponseEntity<?> newCliente(@RequestBody Cliente cliente) {
-    EntityModel<Cliente> entityModel = assembler.toModel(repository.save(cliente));
-    return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+    if (valida(cliente)) {
+      EntityModel<Cliente> entityModel = assembler.toModel(repository.save(cliente));
+      return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+          .header("Location", "/conta")
+          .body(entityModel);
+    }
+    return ResponseEntity.badRequest().build();
   }
 
   @GetMapping("/clientes/{id}")
