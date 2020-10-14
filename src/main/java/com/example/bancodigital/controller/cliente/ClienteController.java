@@ -5,6 +5,8 @@ import com.example.bancodigital.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,9 @@ public class ClienteController {
   }
 
   @PostMapping("/clientes")
-  Cliente newCliente(@RequestBody Cliente cliente) {
-    return repository.save(cliente);
+  ResponseEntity<?> newCliente(@RequestBody Cliente cliente) {
+    EntityModel<Cliente> entityModel = assembler.toModel(repository.save(cliente));
+    return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
   }
 
   @GetMapping("/clientes/{id}")
@@ -41,8 +44,8 @@ public class ClienteController {
   }
 
   @PutMapping("/clientes/{id}")
-  Cliente replaceCliente(@RequestBody Cliente novoCliente, @PathVariable Long id) {
-    return repository
+  ResponseEntity<?> replaceCliente(@RequestBody Cliente novoCliente, @PathVariable Long id) {
+    Cliente updated = repository
         .findById(id)
         .map(
             cliente -> {
@@ -58,10 +61,13 @@ public class ClienteController {
               novoCliente.setId(id);
               return repository.save(novoCliente);
             });
+    EntityModel<Cliente> entityModel = assembler.toModel(updated);
+    return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
   }
 
   @DeleteMapping("/clientes/{id}")
-  void deleteCliente(@PathVariable Long id) {
+  ResponseEntity<?> deleteCliente(@PathVariable Long id) {
     repository.deleteById(id);
+    return ResponseEntity.noContent().build();
   }
 }
