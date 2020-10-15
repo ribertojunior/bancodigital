@@ -33,13 +33,12 @@ class UtilsTest {
 
   @Test
   void valida() {
-    assertTrue(Utils.valida(clienteValido));
-    assertFalse(Utils.valida(clienteNomeVazio));
-    assertFalse(Utils.valida(clienteSobrenomeVazio));
-    assertFalse(Utils.valida(clienteEmailRuim));
-    assertFalse(Utils.valida(clienteEmailRuim2));
-    assertFalse(Utils.valida(clienteCPFFalso));
-
+    assertTrue(Utils.valida(clienteValido).trim().isEmpty());
+    assertFalse(Utils.valida(clienteNomeVazio).trim().isEmpty());
+    assertFalse(Utils.valida(clienteSobrenomeVazio).trim().isEmpty());
+    assertFalse(Utils.valida(clienteEmailRuim).trim().isEmpty());
+    assertFalse(Utils.valida(clienteEmailRuim2).trim().isEmpty());
+    assertFalse(Utils.valida(clienteCPFFalso).trim().isEmpty());
   }
 
   @Test
@@ -48,5 +47,17 @@ class UtilsTest {
 
   @Test
   void validaEmail() {
+  }
+
+  @Test
+  void validaData() {
+    try {
+      assertTrue(Utils.validaData(new SimpleDateFormat("dd/MM/yyyy").parse("18/06/1987")).trim().isEmpty());
+      assertFalse(Utils.validaData(new SimpleDateFormat("dd/MM/yyyy").parse("18/06/2020")).trim().isEmpty());
+      assertTrue(Utils.validaData(new SimpleDateFormat("dd/MM/yyyy").parse("14/10/2002")).trim().isEmpty());
+      assertFalse(Utils.validaData(new SimpleDateFormat("dd/MM/yyyy").parse("15/10/2002")).trim().isEmpty());
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
   }
 }
