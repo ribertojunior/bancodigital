@@ -53,22 +53,22 @@ public class ClienteController {
         if (repository.findByEmail(cliente.getEmail()) != null) {
           throw new ClienteRepetidoException("Email " + cliente.getEmail() + " repetido.");
         }
-        Endereco endereco = cliente.getEndereco() != null ? enderecoRepository.save(cliente.getEndereco()) : null;
+        Endereco endereco =
+            cliente.getEndereco() != null
+                ? enderecoRepository.save(cliente.getEndereco())
+                : enderecoRepository.save(new Endereco());
         Cliente clienteSave = repository.save(cliente);
-        if (endereco != null) {
-          endereco.setCliente_id(clienteSave.getId());
-          enderecoRepository.save(endereco);
-        }
+        endereco.setCliente_id(clienteSave.getId());
+        enderecoRepository.save(endereco);
         EntityModel<Cliente> entityModel = assembler.toModel(clienteSave);
-
         return ResponseEntity.created(
-                linkTo(methodOn(EnderecoController.class).all()).withRel("enderecos").toUri())
+                linkTo(methodOn(EnderecoController.class).one(endereco.getId())).withSelfRel().toUri())
             .body(entityModel);
       }
-    } catch (ClienteRepetidoException e) {
+    } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
-          .body(Problem.create().withTitle("Erro de Cliente Repetido").withDetail(e.getMessage()));
+          .body(Problem.create().withTitle("Erro de Cliente").withDetail(e.getMessage()));
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)

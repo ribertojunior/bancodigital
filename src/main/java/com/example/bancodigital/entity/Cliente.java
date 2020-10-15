@@ -23,6 +23,15 @@ public class Cliente {
   @JoinColumn(name = "endereco_id", referencedColumnName = "id")
   private Endereco endereco;
 
+  /**
+   * Construtor Cliente
+   * @param nome nome do cliente
+   * @param sobrenome do cliente
+   * @param email do cliente
+   * @param dataDeNascimento do cliente
+   * @param cpf do cliente
+   * @param endereco do cliente (pode ser nulo)
+   */
   public Cliente(String nome, String sobrenome, String email, Date dataDeNascimento, String cpf, Endereco endereco) {
     this.nome = nome;
     this.sobrenome = sobrenome;

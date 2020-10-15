@@ -1,6 +1,7 @@
 package com.example.bancodigital.utils;
 
 import com.example.bancodigital.entity.Cliente;
+import com.example.bancodigital.entity.Endereco;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -10,12 +11,15 @@ import java.util.regex.Pattern;
 public class Utils {
 
   public static String valida(Cliente cliente) {
-    String retorno = cliente.getNome() != null
-        && !cliente.getNome().trim().isEmpty()
-        && cliente.getSobrenome() != null
-        && !cliente.getSobrenome().trim().isEmpty() ? "" : " Nome ou sobrenome vazio.";
-    return retorno +
-        validaEmail(cliente.getEmail())
+    String retorno =
+        cliente.getNome() != null
+                && !cliente.getNome().trim().isEmpty()
+                && cliente.getSobrenome() != null
+                && !cliente.getSobrenome().trim().isEmpty()
+            ? ""
+            : " Nome ou sobrenome vazio.";
+    return retorno
+        + validaEmail(cliente.getEmail())
         + validaCPF(cliente.getCpf())
         + validaData(cliente.getDataDeNascimento());
   }
@@ -23,7 +27,9 @@ public class Utils {
   public static String validaData(Date dataDeNascimento) {
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.YEAR, -18);
-    return dataDeNascimento != null && dataDeNascimento.before(calendar.getTime()) ? "" : "Data de nascimento inválida";
+    return dataDeNascimento != null && dataDeNascimento.before(calendar.getTime())
+        ? ""
+        : "Data de nascimento inválida";
   }
 
   public static String validaCPF(String cpf) {
@@ -74,6 +80,28 @@ public class Utils {
     String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
     Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
 
-    return email != null && !email.trim().isEmpty() && pattern.matcher(email).matches() ? "" : " Email não válido.";
+    return email != null && !email.trim().isEmpty() && pattern.matcher(email).matches()
+        ? ""
+        : " Email não válido.";
+  }
+
+  public static String validaEndereco(Endereco endereco) {
+    return endereco != null
+        ? validaCEP(endereco.getCep()) + validaString(endereco.getRua(), "Rua")
+        + validaString(endereco.getBairro(), "Bairro")
+        + validaString(endereco.getComplemento(), "Complemento")
+        + validaString(endereco.getCidade(), "Cidade")
+        + validaString(endereco.getEstado(), "Estado")
+        : "Endereço vazio.";
+  }
+
+  public static String validaString(String s, String desc) {
+    return s != null && !s.trim().isEmpty() ? "" : "Campo " + desc + " é obrigatório.";
+  }
+
+  public static String validaCEP(String cep) {
+    return cep != null && !cep.trim().isEmpty() && cep.matches("\\d{5}-\\d{3}")
+        ? ""
+        : "CEP inválido";
   }
 }
