@@ -53,10 +53,12 @@ public class ClienteController {
         if (repository.findByEmail(cliente.getEmail()) != null) {
           throw new ClienteRepetidoException("Email " + cliente.getEmail() + " repetido.");
         }
-        Endereco endereco = enderecoRepository.save(cliente.getEndereco());
+        Endereco endereco = cliente.getEndereco() != null ? enderecoRepository.save(cliente.getEndereco()) : null;
         Cliente clienteSave = repository.save(cliente);
-        endereco.setCliente_id(clienteSave.getId());
-        enderecoRepository.save(endereco);
+        if (endereco != null) {
+          endereco.setCliente_id(clienteSave.getId());
+          enderecoRepository.save(endereco);
+        }
         EntityModel<Cliente> entityModel = assembler.toModel(clienteSave);
 
         return ResponseEntity.created(
