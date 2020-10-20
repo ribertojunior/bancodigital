@@ -1,9 +1,10 @@
 package com.example.bancodigital.storage;
 
-import java.net.URI;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@Data
+@ConfigurationProperties(prefix = "file")
 public class FileStorageProperties {
-  public URI getUploadDir() {
-    return null;
-  }
+  private String uploadDir;
 }

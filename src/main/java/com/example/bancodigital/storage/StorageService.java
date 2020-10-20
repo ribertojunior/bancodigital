@@ -21,7 +21,7 @@ public class StorageService {
   private final Path fileStorageLocation;
 
   @Autowired
-  public StorageService(FileStorageProperties fileStorageProperties) throws StorageFileException {
+  public StorageService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
     try{
       Files.createDirectories(this.fileStorageLocation);
@@ -30,7 +30,7 @@ public class StorageService {
     }
   }
 
-  public String store(MultipartFile file) throws StorageFileException {
+  public String store(MultipartFile file) {
     String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
     try{
       if (filename.contains("..")) {
@@ -44,7 +44,7 @@ public class StorageService {
     return filename;
   }
 
-  public Resource loadAsResource(String filename) throws StorageFileException {
+  public Resource loadAsResource(String filename) {
     try{
       Path filePath = this.fileStorageLocation.resolve(filename).normalize();
       Resource resource = new UrlResource(filePath.toUri());

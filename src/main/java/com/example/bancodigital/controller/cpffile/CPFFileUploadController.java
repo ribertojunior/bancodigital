@@ -1,6 +1,7 @@
 package com.example.bancodigital.controller.cpffile;
 
 import com.example.bancodigital.storage.StorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -9,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@RestController
+@Slf4j
 public class CPFFileUploadController {
+  @Autowired
   private final StorageService storageService;
 
-  @Autowired
   public CPFFileUploadController(StorageService storageService) {
     this.storageService = storageService;
   }
