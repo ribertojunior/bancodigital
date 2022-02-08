@@ -7,6 +7,7 @@ import com.example.bancodigital.entity.Endereco;
 import com.example.bancodigital.repository.ClienteRepository;
 import com.example.bancodigital.repository.EnderecoRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -26,6 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class ClienteController {
   private final ClienteRepository repository;
   private final ClienteModelAssembler assembler;
@@ -44,6 +46,7 @@ public class ClienteController {
   @PostMapping("/clientes")
   ResponseEntity<?> newCliente(@RequestBody Cliente cliente) {
     String ret;
+    log.info("Cliente: " + cliente);
     try {
       if ((ret = valida(cliente)).trim().isEmpty()) {
         if (repository.findByCpf(cliente.getCpf()) != null
